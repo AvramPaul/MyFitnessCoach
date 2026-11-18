@@ -1,0 +1,66 @@
+<!doctype html><html lang="ro"><head><meta charset="utf-8"><title>Aplicația clientului – mobil</title>
+<link rel="stylesheet" href="style.css"><script src="common.js"></script>
+<style>
+body{padding:30px;width:1280px}
+.phones{display:flex;gap:28px;justify-content:center}
+.ph{width:360px;height:740px;background:var(--bg);border:10px solid #111827;border-radius:44px;overflow:hidden;display:flex;flex-direction:column}
+.ph .sc{flex:1;padding:18px 16px;display:flex;flex-direction:column;gap:12px;overflow:hidden}
+.ph h2{font-size:20px}
+.tb{display:flex;justify-content:space-around;background:#fff;border-top:1px solid var(--line);padding:10px 0 16px;font-size:11px;color:var(--muted);text-align:center}
+.tb .on{color:var(--accent);font-weight:700}
+.cap{text-align:center;font-weight:700;margin-top:12px;color:var(--muted)}
+.mini{display:flex;justify-content:space-between;align-items:center;padding:12px 14px}
+.cat{padding:12px 14px}
+.cat .h{display:flex;justify-content:space-between;font-weight:700}
+.cat .h span{color:var(--muted);font-weight:500}
+.inp{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin-top:8px;font-size:13px}
+.inp .g{border:1px solid var(--line);border-radius:6px;padding:2px 8px;background:#f9fafb}
+.set{display:grid;grid-template-columns:30px 1fr 1fr 1fr;gap:6px;font-size:13px;align-items:center;margin-top:6px}
+.set .f{border:1px solid var(--line);border-radius:8px;padding:6px;text-align:center;background:#fff}
+.set.h{color:var(--muted);font-size:11px}
+</style></head><body>
+<div class="phones">
+ <div><div class="ph"><div class="sc">
+   <div><div class="small muted">Miercuri, 18 nov</div><h2>Salut, Andrei</h2></div>
+   <div class="card" style="display:flex;gap:14px;align-items:center"><div id="r"></div><div class="legend"><span><i class="dot" style="background:var(--prot)"></i>P 118/180</span><span><i class="dot" style="background:var(--carb)"></i>C 160/270</span><span><i class="dot" style="background:var(--fat)"></i>G 58/75</span></div></div>
+   <div class="card mini"><div><div class="small muted">Săptămâna</div><b>9.540 / 16.800 kcal</b></div><span class="pill ok">pe drum bun</span></div>
+   <div class="card mini"><div><div class="small muted">Următoarea masă</div><b>Cină</b> <span class="small muted">· idee: Somon cu sparanghel</span></div><span>›</span></div>
+   <div class="card mini"><div><div class="small muted">Antrenament azi</div><b>Push</b> <span class="small muted">· 5 exerciții</span></div><span>›</span></div>
+   <div class="card mini"><div><div class="small muted">Următoarea cântărire</div><b>Vineri, 20 nov</b></div><span>⚖</span></div>
+ </div><div class="tb"><div class="on">⌂<br>Acasă</div><div>🍽<br>Mese</div><div>⚡<br>Antren.</div><div>⚖<br>Greutate</div><div>💬<br>Chat</div></div></div><div class="cap">Acasă (client)</div></div>
+
+ <div><div class="ph"><div class="sc">
+   <h2>Mesele de azi</h2>
+   <div class="card cat"><div class="h">Mic dejun <span>540 kcal ✓</span></div></div>
+   <div class="card cat"><div class="h">Prânz <span>750 kcal ✓</span></div></div>
+   <div class="card cat" style="border-color:var(--accent)"><div class="h">Cină <span>în curs</span></div>
+     <div class="inp" style="color:var(--muted)">🔍 Caută aliment (bază de date)…</div>
+     <div class="inp"><span>Somon atlantic</span><span class="g">150 g</span><span>312 kcal</span></div>
+     <div class="inp"><span>Sparanghel</span><span class="g">200 g</span><span>40 kcal</span></div>
+     <div class="inp"><span>Ulei de măsline</span><span class="g">10 ml</span><span>88 kcal</span></div>
+     <div class="photo" style="height:110px;margin-top:10px"></div>
+     <div class="small" style="color:var(--over);margin-top:6px">* Poza mesei este obligatorie</div>
+     <button class="btn primary" style="width:100%;margin-top:8px">Salvează cina · 440 kcal</button></div>
+   <div class="card cat"><div class="h">Gustare <span>+ adaugă</span></div></div>
+   <div style="text-align:center" class="muted">+ Masă suplimentară</div>
+ </div><div class="tb"><div>⌂<br>Acasă</div><div class="on">🍽<br>Mese</div><div>⚡<br>Antren.</div><div>⚖<br>Greutate</div><div>💬<br>Chat</div></div></div><div class="cap">Logare masă</div></div>
+
+ <div><div class="ph"><div class="sc">
+   <h2>Push · azi</h2>
+   <div class="card cat"><div class="h">Bench press <span>kg ▾</span></div>
+     <div class="set h"><span>Set</span><span>Rep.</span><span>Greutate</span><span>✓</span></div>
+     <div class="set"><span>1</span><span class="f">8</span><span class="f">80</span><span class="f" style="color:var(--ok)">✓</span></div>
+     <div class="set"><span>2</span><span class="f">8</span><span class="f">80</span><span class="f" style="color:var(--ok)">✓</span></div>
+     <div class="set"><span>3</span><span class="f">6</span><span class="f">80</span><span class="f">✎</span></div>
+     <div class="small muted" style="margin-top:6px">Plan antrenor: 3×8 · 80 kg</div></div>
+   <div class="card cat"><div class="h">Flotări <span>body weight ▾</span></div>
+     <div class="set"><span>1</span><span class="f">15</span><span class="f">BW</span><span class="f">○</span></div></div>
+   <div class="card cat"><div class="h">Cardio <span>minute ▾</span></div>
+     <div class="set"><span>1</span><span class="f">—</span><span class="f">20 min</span><span class="f">○</span></div></div>
+   <div class="card cat"><div class="h">Progres Bench press <span>lună</span></div>
+     <svg viewBox="0 0 300 70" width="100%"><polyline fill="none" stroke="#2563eb" stroke-width="3" points="5,60 75,52 150,40 225,30 295,14"/></svg>
+     <div class="small muted">Max 80 kg × 2 serii · +10 kg în 2 luni 💪</div></div>
+ </div><div class="tb"><div>⌂<br>Acasă</div><div>🍽<br>Mese</div><div class="on">⚡<br>Antren.</div><div>⚖<br>Greutate</div><div>💬<br>Chat</div></div></div><div class="cap">Antrenament (client completează)</div></div>
+</div>
+<script>ring(document.getElementById('r'),{size:120,kcal:1640,target:2400,p:118,c:160,f:58})</script>
+</body></html>

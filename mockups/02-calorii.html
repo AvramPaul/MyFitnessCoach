@@ -1,0 +1,61 @@
+<!doctype html><html lang="ro"><head><meta charset="utf-8"><title>Calorii – antrenor</title>
+<link rel="stylesheet" href="style.css"><script src="common.js"></script>
+<style>
+.days{display:flex;gap:8px;align-items:center;margin-bottom:20px}
+.days .d{flex:1;text-align:center;padding:9px 0;border-radius:12px;background:var(--surface);border:1px solid var(--line)}
+.days .d b{display:block;font-size:17px}
+.days .d .dots{display:flex;gap:3px;justify-content:center;margin-top:4px}
+.days .d.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.days .arr{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:#fff;display:grid;place-items:center}
+.feed{display:flex;flex-direction:column;gap:14px;max-width:900px}
+.meal{display:grid;grid-template-columns:150px 170px 1fr 210px;gap:18px;align-items:center;padding:16px}
+.who{display:flex;flex-direction:column;gap:6px}
+.ing{font-size:13px}
+.ing li{list-style:none;display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px dashed var(--line)}
+.ing li:last-child{border:0}
+.ing .tot{font-weight:700;margin-top:6px;display:flex;justify-content:space-between}
+.meal .photo{height:132px}
+.ringwrap{display:flex;align-items:center;gap:10px}
+.time{font-size:12px;color:var(--muted)}
+.tag{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--accent)}
+.hint{margin:0 0 12px;color:var(--muted);font-size:12px}
+</style></head><body>
+<div class="app"><aside class="side" id="s"></aside>
+<main class="main">
+  <div class="top"><div><h1>Calorii</h1><div class="sub">Cronologia meselor tuturor clienților, cea mai nouă sus</div></div>
+  <div class="row"><button class="btn">Toți clienții ▾</button><button class="btn">Azi</button></div></div>
+
+  <div class="days"><div class="arr">‹</div>
+    <div class="d"><span class="small">Joi</span><b>12</b><div class="dots"><i class="dot" style="background:var(--ok)"></i><i class="dot" style="background:var(--ok)"></i><i class="dot" style="background:var(--over)"></i></div></div>
+    <div class="d"><span class="small">Vin</span><b>13</b><div class="dots"><i class="dot" style="background:var(--ok)"></i><i class="dot" style="background:var(--ok)"></i><i class="dot" style="background:var(--ok)"></i></div></div>
+    <div class="d"><span class="small">Sâm</span><b>14</b><div class="dots"><i class="dot" style="background:var(--warn)"></i><i class="dot" style="background:var(--ok)"></i><i class="dot" style="background:var(--ok)"></i></div></div>
+    <div class="d"><span class="small">Dum</span><b>15</b><div class="dots"><i class="dot" style="background:var(--over)"></i><i class="dot" style="background:var(--over)"></i><i class="dot" style="background:var(--ok)"></i></div></div>
+    <div class="d"><span class="small">Lun</span><b>16</b><div class="dots"><i class="dot" style="background:var(--ok)"></i><i class="dot" style="background:var(--ok)"></i><i class="dot" style="background:var(--ok)"></i></div></div>
+    <div class="d"><span class="small">Mar</span><b>17</b><div class="dots"><i class="dot" style="background:var(--ok)"></i><i class="dot" style="background:var(--warn)"></i><i class="dot" style="background:var(--ok)"></i></div></div>
+    <div class="d on"><span class="small">Azi</span><b>18</b><div class="dots"><i class="dot" style="background:#fff8"></i><i class="dot" style="background:#fff8"></i><i class="dot" style="background:#fff8"></i></div></div>
+  <div class="arr">›</div></div>
+  <p class="hint">Glisează bara de zile spre stânga pentru istoric. Inelul de pe fiecare card arată <b>toată ziua</b> clientului; cardul arată <b>o singură masă</b>. Click pe card → detalii masă + comentariu (merge în chat).</p>
+
+  <div class="feed" id="feed"></div>
+</main></div>
+<script>
+document.getElementById('s').innerHTML=sidebar('calorii');
+const meals=[
+ {n:'Andrei',m:'Prânz',t:'11:36',kcal:1640,target:2400,p:118,c:160,f:58,ing:[['Piept de pui','200 g','330'],['Orez basmati fiert','250 g','325'],['Broccoli','150 g','51'],['Ulei de măsline','10 ml','44']]},
+ {n:'Denis',m:'Gustare',t:'10:52',kcal:1980,target:2000,p:150,c:190,f:66,ing:[['Iaurt grecesc 2%','200 g','146'],['Afine','80 g','46'],['Miere','10 g','30']]},
+ {n:'Paul',m:'Mic dejun',t:'09:40',kcal:520,target:2800,p:38,c:52,f:17,ing:[['Ovăz','80 g','303'],['Lapte 1,5%','200 ml','94'],['Banană','100 g','89'],['Unt de arahide','5 g','30']]},
+ {n:'Angelica',m:'Gustare',t:'09:15',kcal:1910,target:1700,p:95,c:210,f:70,ing:[['Croissant cu ciocolată','90 g','380'],['Cappuccino','250 ml','110']]},
+];
+const f=document.getElementById('feed');
+meals.forEach((x,i)=>{
+  const d=document.createElement('div'); d.className='card meal';
+  d.innerHTML=`<div class="who"><div class="row">${av(x.n)}<b>${x.n}</b></div><span class="tag">${x.m}</span><span class="time">postat la ${x.t}</span></div>
+  <div class="ringwrap"><div id="r${i}"></div></div>
+  <div class="ing"><ul>${x.ing.map(r=>`<li><span>${r[0]} · <span class="muted">${r[1]}</span></span><span>${r[2]} kcal</span></li>`).join('')}</ul>
+    <div class="tot"><span>Total masă</span><span>${x.ing.reduce((a,r)=>a+ +r[2],0)} kcal</span></div>
+    <div class="legend" style="flex-direction:row;gap:14px;margin-top:8px"><span><i class="dot" style="background:var(--prot)"></i>P ${x.p} g</span><span><i class="dot" style="background:var(--carb)"></i>C ${x.c} g</span><span><i class="dot" style="background:var(--fat)"></i>G ${x.f} g</span><span class="muted">(ziua)</span></div></div>
+  <div class="photo"></div>`;
+  f.appendChild(d); ring(document.getElementById('r'+i),{size:130,...x});
+});
+</script>
+</body></html>

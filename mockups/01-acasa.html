@@ -1,0 +1,47 @@
+<!doctype html><html lang="ro"><head><meta charset="utf-8"><title>Acasă – antrenor</title>
+<link rel="stylesheet" href="style.css"><script src="common.js"></script>
+<style>
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:18px}
+.kpi{display:flex;align-items:center;gap:16px}
+.kpi .big{width:68px;height:68px;border-radius:50%;display:grid;place-items:center;font-size:26px;font-weight:800}
+.grid2{display:grid;grid-template-columns:1.05fr 1fr;gap:16px}
+.feed .it{display:flex;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.feed .it:last-child{border:0}
+.feed .thumb{width:46px;height:46px;flex:none}
+.feed .thumb::after{display:none}
+.feed .t{flex:1}
+h3{font-size:15px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center}
+</style></head><body>
+<div class="app"><aside class="side" id="s"></aside>
+<main class="main">
+  <div class="top"><div><h1>Bună dimineața 👋</h1><div class="sub">Miercuri, 18 noiembrie 2026</div></div>
+  <div class="row"><button class="btn">Cod de invitație client: <b>FIT-7Q2K</b></button><button class="btn primary">+ Client nou</button></div></div>
+
+  <div class="kpis">
+    <div class="card kpi"><div class="big" style="background:#eef2ff;color:#2563eb">7</div><div><b>Clienți activi</b><div class="small muted">+2 față de luna trecută</div></div></div>
+    <div class="card kpi"><div class="big" style="background:#fff7e6;color:#d97706">4</div><div><b>Mese postate azi</b><div class="small muted">din 7 clienți</div></div></div>
+    <div class="card kpi"><div class="big" style="background:#e8f6ee;color:#16a34a">0</div><div><b>Și-au atins caloriile azi</b><div class="small muted">ziua e încă în desfășurare</div></div></div>
+  </div>
+
+  <div class="grid2">
+    <div class="card feed"><h3>Notificări <span class="small muted">mese și cântăriri</span></h3>
+      <div class="it"><div class="photo thumb"></div><div class="t"><b>Andrei</b> a postat <b>prânzul</b> · 750 kcal<div class="small muted">acum 4 min</div></div><span class="pill warn">1.640 / 2.400</span></div>
+      <div class="it"><div class="av" style="background:#0891b2">⚖</div><div class="t"><b>Denis</b> s-a cântărit · 82,4 kg <span style="color:var(--ok)">▼ 0,6</span><div class="small muted">acum 22 min</div></div></div>
+      <div class="it"><div class="photo thumb"></div><div class="t"><b>Paul</b> a postat <b>micul dejun</b> · 520 kcal<div class="small muted">acum 1 h</div></div><span class="pill warn">520 / 2.800</span></div>
+      <div class="it"><div class="photo thumb"></div><div class="t"><b>Angelica</b> a postat <b>o gustare</b> · 180 kcal<div class="small muted">acum 2 h</div></div><span class="pill over">1.910 / 1.700</span></div>
+      <div class="it"><div class="av" style="background:#dc2626">!</div><div class="t"><b>Maria</b> nu s-a cântărit încă azi<div class="small muted">reamintire trimisă automat la 17:00</div></div></div>
+    </div>
+    <div class="card"><h3>Număr de clienți <span class="small muted">octombrie → noiembrie</span></h3>
+      <svg viewBox="0 0 520 300" width="100%">
+        <g stroke="#eef0f3"><line x1="40" y1="40" x2="510" y2="40"/><line x1="40" y1="110" x2="510" y2="110"/><line x1="40" y1="180" x2="510" y2="180"/><line x1="40" y1="250" x2="510" y2="250"/></g>
+        <g fill="#6b7684" font-size="11"><text x="14" y="44">8</text><text x="14" y="114">6</text><text x="14" y="184">4</text><text x="14" y="254">2</text>
+        <text x="40" y="275">1 oct</text><text x="190" y="275">15 oct</text><text x="340" y="275">1 nov</text><text x="470" y="275">18 nov</text></g>
+        <path d="M40 250 L110 250 L160 215 L230 215 L280 180 L340 145 L400 110 L460 75 L510 75 L510 260 L40 260Z" fill="#16a34a" opacity=".08"/>
+        <path d="M40 250 L110 250 L160 215 L230 215 L280 180 L340 145 L400 110 L460 75 L510 75" fill="none" stroke="#16a34a" stroke-width="3" stroke-linejoin="round"/>
+        <circle cx="510" cy="75" r="5" fill="#16a34a"/><text x="470" y="64" font-size="12" font-weight="700" fill="#18212b">7 clienți</text>
+      </svg>
+    </div>
+  </div>
+</main></div>
+<script>document.getElementById('s').innerHTML=sidebar('acasa')</script>
+</body></html>

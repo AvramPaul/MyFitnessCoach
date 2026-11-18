@@ -1,0 +1,41 @@
+<!doctype html><html lang="ro"><head><meta charset="utf-8"><title>Antrenamente – antrenor</title>
+<link rel="stylesheet" href="style.css"><script src="common.js"></script>
+<style>
+.cal{display:grid;grid-template-columns:150px repeat(7,1fr);gap:8px}
+.cal .h{font-size:12px;font-weight:700;color:var(--muted);text-align:center;padding:6px 0}
+.cal .h.today{color:var(--accent)}
+.cal .cl{display:flex;align-items:center;gap:8px;font-weight:600}
+.slot{background:var(--surface);border:1px solid var(--line);border-radius:12px;min-height:58px;padding:8px;font-size:12px}
+.slot.empty{border-style:dashed;color:#b6bdc7;display:grid;place-items:center}
+.wk{border-radius:8px;padding:6px 8px;font-weight:700;display:flex;justify-content:space-between}
+.wk.legs{background:#e8f6ee;color:#15803d}.wk.push{background:#eef2ff;color:#1d4ed8}.wk.pull{background:#fdf2f8;color:#be185d}.wk.glute{background:#fff7e6;color:#b45309}.wk.rest{background:#f3f4f6;color:#6b7684}
+.ex{margin-top:6px;display:flex;flex-direction:column;gap:3px}
+.ex div{display:flex;flex-direction:column;color:var(--ink);font-weight:600}
+.ex div span:last-child{color:var(--muted);font-weight:400}
+.done{font-size:11px;color:var(--ok);margin-top:5px}
+</style></head><body>
+<div class="app"><aside class="side" id="s"></aside>
+<main class="main">
+  <div class="top"><div><h1>Antrenamente</h1><div class="sub">Săptămâna 16 – 22 noiembrie · un rând per client</div></div>
+  <div class="row"><button class="btn">‹ Săpt. trecută</button><button class="btn">Șabloane (Push · Pull · Legs · Fesieri …)</button><button class="btn primary">+ Antrenament</button></div></div>
+  <div class="cal" id="c"></div>
+</main></div>
+<script>
+document.getElementById('s').innerHTML=sidebar('antrenamente');
+const days=['Lun 16','Mar 17','Mie 18','Joi 19','Vin 20','Sâm 21','Dum 22'];
+const c=document.getElementById('c');
+c.innerHTML='<div></div>'+days.map((d,i)=>`<div class="h ${i==2?'today':''}">${d}${i==2?' · azi':''}</div>`).join('');
+const legsOpen=`<div class="wk legs">Leg day <span>▴</span></div><div class="ex"><div><span>Squats</span><span>4×8 · 100 kg</span></div><div><span>Calf raises</span><span>4×15 · 60 kg</span></div><div><span>Leg extensions</span><span>3×12 · 45 kg</span></div><div><span>Cardio</span><span>20 min</span></div></div><div class="done">✓ completat de client</div>`;
+const W=(cls,t)=>`<div class="wk ${cls}">${t} <span>▾</span></div>`;
+const rows={
+ Andrei:[legsOpen,'',W('push','Push'),'',W('pull','Pull'),W('legs','Legs'),''],
+ Paul:[W('push','Push'),W('pull','Pull'),'',W('legs','Legs'),W('push','Push'),'',''],
+ Angelica:[W('glute','Fesieri'),'',W('glute','Fesieri'),'',W('pull','Upper'),'',''],
+ Maria:[W('glute','Fesieri'),W('pull','Upper'),'',W('glute','Fesieri'),'','',''],
+ Denis:['','','','','','',''],
+};
+Object.entries(rows).forEach(([n,r])=>{
+ c.innerHTML+=`<div class="cl">${av(n)}${n}${n=='Denis'?'<div class="small muted" style="font-weight:400">doar dietă</div>':''}</div>`+r.map(x=>x?`<div class="slot">${x}</div>`:`<div class="slot empty">+</div>`).join('');
+});
+</script>
+</body></html>

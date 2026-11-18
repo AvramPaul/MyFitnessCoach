@@ -1,0 +1,56 @@
+<!doctype html><html lang="ro"><head><meta charset="utf-8"><title>Client – Andrei</title>
+<link rel="stylesheet" href="style.css"><script src="common.js"></script>
+<style>
+.g{display:grid;grid-template-columns:330px 1fr;gap:16px}
+.col{display:flex;flex-direction:column;gap:16px}
+h3{font-size:15px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center}
+.target{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px}
+.target b{font-size:18px}
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:10px;text-align:center;font-size:11px}
+.week .b{height:70px;border-radius:8px;background:#f3f4f6;position:relative;overflow:hidden}
+.week .b i{position:absolute;left:0;right:0;bottom:0;border-radius:6px}
+.bar{height:10px;border-radius:99px;background:#eef0f3;overflow:hidden;margin:8px 0 4px}
+.bar i{display:block;height:100%;background:var(--ok)}
+.sched{display:flex;gap:6px;flex-wrap:wrap}
+.sched span{padding:6px 10px;border-radius:8px;border:1px solid var(--line);font-size:12px}
+.sched span.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+</style></head><body>
+<div class="app"><aside class="side" id="s"></aside>
+<main class="main">
+  <div class="top"><div class="row"><div class="av" style="background:#2563eb;width:48px;height:48px;font-size:18px">A</div><div><h1>Andrei Popescu</h1><div class="sub">Client din 1 oct 2026 · dietă + antrenamente · masă musculară</div></div></div>
+  <div class="row"><button class="btn">💬 Mesaj</button><button class="btn">Dezactivează accesul</button></div></div>
+  <div class="g">
+    <div class="col">
+      <div class="card"><h3>Azi</h3><div class="row" style="gap:18px"><div id="r"></div><div class="legend"><span><i class="dot" style="background:var(--prot)"></i>Proteine 118 / 180 g</span><span><i class="dot" style="background:var(--carb)"></i>Carbohidrați 160 / 270 g</span><span><i class="dot" style="background:var(--fat)"></i>Grăsimi 58 / 75 g</span></div></div></div>
+      <div class="card"><h3>Ținte <button class="btn">✎ Editează</button></h3>
+        <div class="target"><span>Calorii / zi</span><b>2.400 kcal</b></div>
+        <div class="target"><span>P · C · G / zi</span><b style="font-size:14px">180 · 270 · 75 g</b></div>
+        <div class="target" style="background:#f9fafb"><span>Țintă săptămânală <span class="small muted">(automat = zi × 7)</span></span><b>16.800 kcal</b></div>
+        <div class="small muted">Toleranță verde: ±5%</div></div>
+      <div class="card"><h3>Cântăriri programate</h3>
+        <div class="sched"><span>L</span><span>Ma</span><span>Mi</span><span>J</span><span class="on">V</span><span>S</span><span>D</span></div>
+        <div class="small muted" style="margin-top:10px">Repetă: în fiecare vineri până la 31 dec 2027 · notificare dimineața, reamintire la 17:00</div></div>
+    </div>
+    <div class="col">
+      <div class="card"><h3>Săptămâna curentă <span class="pill ok">pe drumul cel bun · 9.540 / 16.800</span></h3>
+        <div class="bar"><i style="width:57%"></i></div><div class="small muted">Zilele roșii și galbene se pot compensa; săptămâna se judecă la final (±5%).</div>
+        <div class="week">
+          <div><div class="b"><i style="height:88%;background:var(--over)"></i></div>Lun · 2.610</div>
+          <div><div class="b"><i style="height:80%;background:var(--ok)"></i></div>Mar · 2.420</div>
+          <div><div class="b"><i style="height:55%;background:var(--warn)"></i></div>Mie · 1.640</div>
+          <div><div class="b"></div>Joi</div><div><div class="b"></div>Vin</div><div><div class="b"></div>Sâm</div><div><div class="b"></div>Dum</div>
+        </div></div>
+      <div class="card"><h3>Greutate <span class="small muted">79,2 → 85,0 kg · țintă 86 kg</span></h3>
+        <svg viewBox="0 0 700 170" width="100%"><line x1="0" x2="700" y1="22" y2="22" stroke="#16a34a" stroke-dasharray="5 5" opacity=".6"/>
+        <polyline fill="none" stroke="#2563eb" stroke-width="3" points="10,150 70,144 130,132 190,120 250,106 310,94 370,84 430,75 490,66 550,61 610,54 690,50"/></svg></div>
+      <div class="card"><h3>Forță · Squats <span class="row" style="gap:6px"><button class="btn">Săptămână</button><button class="btn primary">Lună</button></span></h3>
+        <svg viewBox="0 0 700 150" width="100%">
+        <g font-size="11" fill="#6b7684"><text x="20" y="145">Aug</text><text x="190" y="145">Sep</text><text x="360" y="145">Oct</text><text x="530" y="145">Nov</text></g>
+        <g fill="#2563eb"><rect x="20" y="80" width="60" height="45" rx="6"/><rect x="190" y="65" width="60" height="60" rx="6"/><rect x="360" y="45" width="60" height="80" rx="6"/><rect x="530" y="25" width="60" height="100" rx="6"/></g>
+        <g font-size="12" font-weight="700" fill="#18212b"><text x="20" y="74">85 kg ×3 serii</text><text x="190" y="59">90 kg ×3</text><text x="360" y="39">95 kg ×4</text><text x="530" y="19">100 kg ×4</text></g></svg>
+        <div class="small muted">Greutatea maximă și numărul de serii la acea greutate.</div></div>
+    </div>
+  </div>
+</main></div>
+<script>document.getElementById('s').innerHTML=sidebar('clienti');ring(document.getElementById('r'),{size:130,kcal:1640,target:2400,p:118,c:160,f:58})</script>
+</body></html>
