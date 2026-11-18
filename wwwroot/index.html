@@ -2,175 +2,103 @@
 <html lang="ro">
 <head>
   <meta charset="utf-8">
-  <title>FitnessCoach – Apple Style Split Screen Showcase</title>
-  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MyFitnessCoach</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="lib/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin>
   <style>
+    @font-face {
+      font-family: "Archivo"; font-weight: 100 900; font-stretch: 62% 125%; font-display: swap;
+      src: url(lib/fonts/archivo-latin-ext.woff2) format("woff2");
+      unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1E00-1E9F, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+    }
+    @font-face {
+      font-family: "Archivo"; font-weight: 100 900; font-stretch: 62% 125%; font-display: swap;
+      src: url(lib/fonts/archivo-latin.woff2) format("woff2");
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+    :root { --stage: #e8e6e1; --ink: #121212; --ink-2: #5b5a55; --s: 1; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
     body {
-      background: #000000;
-      color: #F5F5F7;
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
-      margin: 0;
-      padding: 0;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
+      background: var(--stage); color: var(--ink); overflow: hidden;
+      font-family: "Archivo", system-ui, sans-serif; -webkit-font-smoothing: antialiased;
+      display: flex; flex-direction: column;
     }
+    header { height: 64px; flex: none; display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 0 28px; }
+    .brand { display: flex; align-items: center; gap: 10px; font-size: 17px; font-weight: 700; letter-spacing: -.015em; }
+    .mark { width: 30px; height: 30px; border-radius: 8px; background: #121212; display: grid; place-items: center; }
+    .mark svg { width: 20px; height: 20px; }
+    .hint { font-size: 14px; color: var(--ink-2); text-align: center; flex: 1; }
+    .reset {
+      font: inherit; font-size: 14px; font-weight: 600; color: var(--ink); cursor: pointer;
+      height: 36px; padding: 0 14px; border-radius: 10px; border: 1px solid rgba(18,18,18,.14); background: rgba(255,255,255,.55);
+    }
+    .reset:hover { background: #fff; }
+    .stage { flex: 1; display: flex; justify-content: center; align-items: flex-start; gap: calc(72px * var(--s)); padding-top: 4px; }
+    figure { display: flex; flex-direction: column; align-items: center; }
+    .slot { width: calc(412px * var(--s)); height: calc(866px * var(--s)); }
 
-    /* Apple Keynote Top Bar */
-    .keynote-bar {
-      height: 52px;
-      background: rgba(22, 22, 23, 0.85);
-      backdrop-filter: blur(25px) saturate(180%);
-      -webkit-backdrop-filter: blur(25px) saturate(180%);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 24px;
-      z-index: 100;
+    /* Ramă de telefon (dimensiuni reale: ecran 390 × 844) */
+    .phone {
+      position: relative; width: 412px; height: 866px; border-radius: 62px; padding: 11px;
+      background: #1b1b1d; transform: scale(var(--s)); transform-origin: top left;
+      box-shadow: 0 0 0 1.5px #3b3b3e, 0 0 0 4px #121214, 0 30px 60px -20px rgba(0,0,0,.35), 0 12px 24px -12px rgba(0,0,0,.25);
     }
-    .brand-group {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .apple-badge {
-      background: rgba(255, 255, 255, 0.12);
-      color: #FFFFFF;
-      padding: 4px 10px;
-      border-radius: var(--radius-pill);
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.3px;
-    }
-    .live-status {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 12px;
-      color: #30D158;
-      font-weight: 500;
-    }
-    .live-status::before {
-      content: "";
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: #30D158;
-      box-shadow: 0 0 8px #30D158;
-    }
-
-    /* Split Workspace */
-    .workspace {
-      flex: 1;
-      display: flex;
-      overflow: hidden;
-      background: radial-gradient(circle at 20% 50%, #16181f 0%, #000000 100%);
-    }
-
-    /* Left Side: Client iPhone */
-    .stage-client {
-      width: 480px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      border-right: 1px solid rgba(255, 255, 255, 0.1);
-      position: relative;
-    }
-    .stage-label {
-      font-size: 11.5px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: #86868B;
-      margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .iphone-container {
-      width: 410px;
-      height: 94%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .iphone-container iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-      background: transparent;
-    }
-
-    /* Right Side: Trainer macOS */
-    .stage-trainer {
-      flex: 1;
-      background: var(--apple-bg);
-      display: flex;
-      flex-direction: column;
-      position: relative;
-    }
-    .stage-trainer iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-
-    /* Top Action Links */
-    .action-link {
-      color: #A1A1A6;
-      text-decoration: none;
-      font-size: 12px;
-      font-weight: 500;
-      padding: 5px 12px;
-      border-radius: var(--radius-pill);
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      transition: all 0.15s ease;
-    }
-    .action-link:hover {
-      color: #FFFFFF;
-      background: rgba(255, 255, 255, 0.14);
-    }
+    .screen { width: 390px; height: 844px; border-radius: 51px; overflow: hidden; background: #000; position: relative; }
+    .screen iframe { width: 390px; height: 844px; border: 0; display: block; }
+    .island { position: absolute; top: 22px; left: 50%; width: 122px; height: 35px; margin-left: -61px; border-radius: 18px; background: #000; z-index: 2; }
+    .home { position: absolute; bottom: 19px; left: 50%; width: 136px; height: 5px; margin-left: -68px; border-radius: 3px; z-index: 2; pointer-events: none; }
+    .phone.light .home { background: #121212; }
+    .phone.dark .home { background: #f2f1ee; opacity: .9; }
+    .side { position: absolute; width: 4px; border-radius: 2px; background: #2c2c2f; }
+    .side.l { left: -5px; } .side.r { right: -5px; }
+    figcaption { margin-top: 18px; font-size: 14px; color: var(--ink-2); display: flex; gap: 10px; align-items: center; }
+    figcaption b { color: var(--ink); font-weight: 650; }
+    figcaption a { color: var(--ink-2); font-size: 13px; text-decoration: underline; text-underline-offset: 3px; text-decoration-color: rgba(18,18,18,.25); }
+    @media (max-width: 760px) { .hint { display: none; } }
   </style>
 </head>
 <body>
+  <header>
+    <div class="brand"><span class="mark"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7.2" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-dasharray="33 50" transform="rotate(-90 12 12)"/></svg></span>MyFitnessCoach</div>
+    <p class="hint">Loghează cina pe telefonul clientului și urmărește-o cum apare la antrenor.</p>
+    <button class="reset" id="reset" title="Readuce datele demo la starea inițială">Repornește demo-ul</button>
+  </header>
 
-  <!-- Top Apple Showcase Bar -->
-  <div class="keynote-bar">
-    <div class="brand-group">
-      <span style="font-size: 18px; line-height: 1;"></span>
-      <span style="font-weight: 700; font-size: 15px; letter-spacing: -0.02em;">FitnessCoach</span>
-      <span class="apple-badge">Apple Design System</span>
-      <span class="apple-badge" style="background:rgba(0,113,227,0.2); color:#47A3FF;">.NET 10 + SignalR</span>
-    </div>
+  <main class="stage">
+    <figure>
+      <div class="slot"><div class="phone light">
+        <div class="screen"><iframe src="client.html?device" title="Aplicația clientului"></iframe></div>
+        <div class="island"></div><div class="home"></div>
+        <i class="side l" style="top:118px;height:32px"></i><i class="side l" style="top:178px;height:62px"></i><i class="side l" style="top:252px;height:62px"></i><i class="side r" style="top:206px;height:98px"></i>
+      </div></div>
+      <figcaption><span><b>Client</b> · Andrei Popescu</span><a href="client.html" target="_blank">deschide separat</a></figcaption>
+    </figure>
+    <figure>
+      <div class="slot"><div class="phone dark">
+        <div class="screen"><iframe src="trainer.html?device" title="Aplicația antrenorului"></iframe></div>
+        <div class="island"></div><div class="home"></div>
+        <i class="side l" style="top:118px;height:32px"></i><i class="side l" style="top:178px;height:62px"></i><i class="side l" style="top:252px;height:62px"></i><i class="side r" style="top:206px;height:98px"></i>
+      </div></div>
+      <figcaption><span><b>Antrenor</b> · Alex Teodorescu</span><a href="trainer.html" target="_blank">deschide separat</a></figcaption>
+    </figure>
+  </main>
 
-    <div style="display:flex; align-items:center; gap:16px;">
-      <div class="live-status">SignalR WebSocket Live</div>
-      <a class="action-link" href="client.html" target="_blank">📱 Fereastră iPhone</a>
-      <a class="action-link" href="trainer.html" target="_blank">💻 Fereastră macOS</a>
-    </div>
-  </div>
-
-  <!-- Showcase Workspace -->
-  <div class="workspace">
-    <!-- Left: iPhone 16 Pro Client App -->
-    <div class="stage-client">
-      <div class="stage-label">
-        <span>📱</span> iPhone 16 Pro · Client Experience
-      </div>
-      <div class="iphone-container">
-        <iframe src="client.html"></iframe>
-      </div>
-    </div>
-
-    <!-- Right: macOS Trainer Dashboard -->
-    <div class="stage-trainer">
-      <iframe src="trainer.html"></iframe>
-    </div>
-  </div>
-
+  <script>
+    // Telefoanele se scalează ca să încapă în fereastră (fără scroll).
+    function fit() {
+      const h = (innerHeight - 64 - 52) / 866;
+      const w = (innerWidth - 56) / (412 * 2 + 72);
+      document.documentElement.style.setProperty('--s', Math.max(.45, Math.min(1, h, w)).toFixed(3));
+    }
+    addEventListener('resize', fit);
+    fit();
+    document.getElementById('reset').addEventListener('click', async e => {
+      e.target.disabled = true;
+      await fetch('/api/demo/reset', { method: 'POST' }).catch(() => {});
+      setTimeout(() => { e.target.disabled = false; }, 800);
+    });
+  </script>
 </body>
 </html>

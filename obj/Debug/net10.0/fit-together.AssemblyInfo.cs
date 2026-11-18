@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("fit-together")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e75fc5fb3dfdddfc115589c65a778376b16e7c29")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b25bcb7d0e4595fb1dbd4c50c6b164373fb6696c")]
 [assembly: System.Reflection.AssemblyProductAttribute("fit-together")]
 [assembly: System.Reflection.AssemblyTitleAttribute("fit-together")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
