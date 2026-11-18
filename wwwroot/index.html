@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="ro">
+<head>
+  <meta charset="utf-8">
+  <title>FitnessCoach – Apple Style Split Screen Showcase</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      background: #000000;
+      color: #F5F5F7;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Apple Keynote Top Bar */
+    .keynote-bar {
+      height: 52px;
+      background: rgba(22, 22, 23, 0.85);
+      backdrop-filter: blur(25px) saturate(180%);
+      -webkit-backdrop-filter: blur(25px) saturate(180%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      z-index: 100;
+    }
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .apple-badge {
+      background: rgba(255, 255, 255, 0.12);
+      color: #FFFFFF;
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+    }
+    .live-status {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: #30D158;
+      font-weight: 500;
+    }
+    .live-status::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #30D158;
+      box-shadow: 0 0 8px #30D158;
+    }
+
+    /* Split Workspace */
+    .workspace {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+      background: radial-gradient(circle at 20% 50%, #16181f 0%, #000000 100%);
+    }
+
+    /* Left Side: Client iPhone */
+    .stage-client {
+      width: 480px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border-right: 1px solid rgba(255, 255, 255, 0.1);
+      position: relative;
+    }
+    .stage-label {
+      font-size: 11.5px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #86868B;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .iphone-container {
+      width: 410px;
+      height: 94%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .iphone-container iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: transparent;
+    }
+
+    /* Right Side: Trainer macOS */
+    .stage-trainer {
+      flex: 1;
+      background: var(--apple-bg);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+    .stage-trainer iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    /* Top Action Links */
+    .action-link {
+      color: #A1A1A6;
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 500;
+      padding: 5px 12px;
+      border-radius: var(--radius-pill);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.15s ease;
+    }
+    .action-link:hover {
+      color: #FFFFFF;
+      background: rgba(255, 255, 255, 0.14);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Apple Showcase Bar -->
+  <div class="keynote-bar">
+    <div class="brand-group">
+      <span style="font-size: 18px; line-height: 1;"></span>
+      <span style="font-weight: 700; font-size: 15px; letter-spacing: -0.02em;">FitnessCoach</span>
+      <span class="apple-badge">Apple Design System</span>
+      <span class="apple-badge" style="background:rgba(0,113,227,0.2); color:#47A3FF;">.NET 10 + SignalR</span>
+    </div>
+
+    <div style="display:flex; align-items:center; gap:16px;">
+      <div class="live-status">SignalR WebSocket Live</div>
+      <a class="action-link" href="client.html" target="_blank">📱 Fereastră iPhone</a>
+      <a class="action-link" href="trainer.html" target="_blank">💻 Fereastră macOS</a>
+    </div>
+  </div>
+
+  <!-- Showcase Workspace -->
+  <div class="workspace">
+    <!-- Left: iPhone 16 Pro Client App -->
+    <div class="stage-client">
+      <div class="stage-label">
+        <span>📱</span> iPhone 16 Pro · Client Experience
+      </div>
+      <div class="iphone-container">
+        <iframe src="client.html"></iframe>
+      </div>
+    </div>
+
+    <!-- Right: macOS Trainer Dashboard -->
+    <div class="stage-trainer">
+      <iframe src="trainer.html"></iframe>
+    </div>
+  </div>
+
+</body>
+</html>
