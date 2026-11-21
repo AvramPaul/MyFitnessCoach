@@ -1,0 +1,6 @@
+# Fișierele text se păstrează în git cu LF; pe Windows se pot deschide cu CRLF fără diferențe false.
+* text=auto
+
+*.jpg binary
+*.png binary
+*.woff2 binary

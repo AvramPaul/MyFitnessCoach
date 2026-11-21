@@ -1,4 +1,4 @@
-namespace FitTogether.Data;
+namespace MyFitnessCoach.Api.Data;
 
 /// <summary>
 /// Date demo coerente, generate relativ la momentul pornirii:

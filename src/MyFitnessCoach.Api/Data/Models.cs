@@ -1,4 +1,4 @@
-namespace FitTogether.Data;
+namespace MyFitnessCoach.Api.Data;
 
 /// <summary>Aliment din baza de date. Valorile sunt per 100 g (sau 100 ml).</summary>
 public record Food(int Id, string Name, string Unit, double Kcal, double P, double C, double F);

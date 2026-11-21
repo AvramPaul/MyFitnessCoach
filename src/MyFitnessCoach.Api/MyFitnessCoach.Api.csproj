@@ -4,7 +4,7 @@
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <RootNamespace>FitTogether</RootNamespace>
+    <RootNamespace>MyFitnessCoach.Api</RootNamespace>
   </PropertyGroup>
 
 </Project>

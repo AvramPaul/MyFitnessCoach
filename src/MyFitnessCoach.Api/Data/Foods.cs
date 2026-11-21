@@ -1,4 +1,4 @@
-namespace FitTogether.Data;
+namespace MyFitnessCoach.Api.Data;
 
 /// <summary>Baza de alimente. Valori per 100 g / 100 ml (aproximări după tabele nutriționale uzuale).</summary>
 public static class Foods

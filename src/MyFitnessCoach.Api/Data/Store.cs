@@ -1,7 +1,7 @@
 using System.Globalization;
 using System.Text.Json;
 
-namespace FitTogether.Data;
+namespace MyFitnessCoach.Api.Data;
 
 /// <summary>Notificare tip banner afișată pe telefonul destinatarului.</summary>
 public record Banner(string To, string ClientId, string Title, string Body, string? Image, string? Avatar, string? Link);

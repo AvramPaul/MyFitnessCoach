@@ -1,4 +1,4 @@
-using FitTogether.Data;
+using MyFitnessCoach.Api.Data;
 using Microsoft.AspNetCore.SignalR;
 
 var builder = WebApplication.CreateBuilder(args);
