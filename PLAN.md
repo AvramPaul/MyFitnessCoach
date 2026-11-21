@@ -5,7 +5,7 @@
 
 ## Stare curentă
 
-- **Etapa curentă:** 0, pregătire (în lucru)
+- **Etapa curentă:** 0, pregătire. Partea de cod e gata; așteaptă ca utilizatorul să verifice Azure for Students și să instaleze Docker Desktop, apoi urmează etapa 1.
 - **Ce funcționează azi:** demo complet, cu cele două telefoane pe `localhost:5000`. Datele stau în memorie și se regenerează la pornire. Nu există conturi.
 - **Ultima actualizare:** 22.11.2026
 
@@ -79,7 +79,7 @@ Scop: un punct de plecare curat, de la care se poate reveni oricând.
 
 - [x] `.gitignore` pentru .NET; cele 56 de fișiere generate din `bin/` și `obj/` nu mai sunt urmărite de git.
 - [x] Commit cu starea actuală (demo-ul aerisit, fix-ul de cache, planul) și tag `demo-hackathon`, ca să se poată reveni oricând la demo.
-- [ ] Repository privat `MyFitnessCoach` pe contul utilizatorului; codul urcat acolo cu tot istoricul. Vechiul repository (`sadenis55/fit-together`) nu mai e folosit (remote-ul local redenumit `vechi`).
+- [x] Repository privat [`AvramPaul/MyFitnessCoach`](https://github.com/AvramPaul/MyFitnessCoach) (remote `origin`); codul urcat cu tot istoricul și tag-ul `demo-hackathon`. Vechiul repository (`sadenis55/fit-together`) nu mai e folosit (remote-ul local redenumit `vechi`).
 - [x] Reorganizare: `src/MyFitnessCoach.Api` (serverul, namespace `MyFitnessCoach.Api`), `tests/MyFitnessCoach.Api.Tests` (19 teste pentru regulile de bază), `docs/` (specificația și mockup-urile), plus `MyFitnessCoach.sln` și `.gitattributes`.
 - [x] `docs/RUNBOOK.md`: cum pornești proiectul, unde vezi erorile, cum repari problemele frecvente. Se completează la fiecare etapă.
 - **Ce faci tu:** creezi repository-ul privat pe GitHub; activezi Azure for Students și verifici ce servicii gratuite include; instalezi Docker Desktop (pentru baza de date locală).
@@ -205,3 +205,4 @@ Scop: un punct de plecare curat, de la care se poate reveni oricând.
 - **21.11.2026:** Demo finalizat și aerisit, fix pentru cache-ul browserului. Creat acest plan.
 - **21.11.2026:** Răspunsuri primite: fără Mac (iOS în cloud), repository privat nou pe contul utilizatorului, Firebase confirmat, rețete și șabloane proprii (etapa 3 nouă), ștergerea clientului include contul. Adăugat `.gitignore`; `bin/` și `obj/` scoase din git. Commit + tag `demo-hackathon`.
 - **22.11.2026:** Proiect reorganizat (`src/`, `tests/`, `docs/`), soluție, 19 teste care trec, RUNBOOK. Demo-ul verificat: rulează identic din noua structură. Rămas din etapa 0: repository-ul privat (îl creează utilizatorul), Azure for Students, Docker Desktop.
+- **22.11.2026:** Codul urcat în repository-ul privat `AvramPaul/MyFitnessCoach` (branch `main` + tag `demo-hackathon`).
