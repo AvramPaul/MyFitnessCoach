@@ -1,0 +1,33 @@
+# Fișiere generate la build (.NET)
+bin/
+obj/
+*.user
+*.suo
+.vs/
+
+# Editor / sistem
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+.DS_Store
+Thumbs.db
+
+# Secrete: nu intră niciodată în git
+.env
+*.env
+appsettings.*.local.json
+secrets.json
+*.pfx
+*.p12
+*.p8
+*.keystore
+*.jks
+google-services.json
+GoogleService-Info.plist
+
+# Unelte JavaScript (Capacitor, mai târziu)
+node_modules/
+
+# Loguri și fișiere temporare
+*.log
+TestResults/

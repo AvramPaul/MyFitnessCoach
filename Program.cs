@@ -11,7 +11,12 @@ builder.Services.AddSignalR();
 
 var app = builder.Build();
 app.UseDefaultFiles();
-app.UseStaticFiles();
+// Browserul verifică la fiecare refresh dacă fișierele s-au schimbat (304 dacă nu),
+// ca modificările din wwwroot să apară imediat, inclusiv în cele două iframe-uri.
+app.UseStaticFiles(new StaticFileOptions
+{
+    OnPrepareResponse = ctx => ctx.Context.Response.Headers.CacheControl = "no-cache",
+});
 app.MapHub<LiveHub>("/hub");
 
 var api = app.MapGroup("/api");

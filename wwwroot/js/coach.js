@@ -55,7 +55,13 @@ function shell() {
   app.innerHTML = `<div class="topbar" id="topbar"></div><main class="view" id="view"></main>
     <div id="composer-host"></div><div id="tabbar-host"></div>`;
   mountChrome(app);
-  $('#view').addEventListener('scroll', () => $('#topbar').classList.toggle('on', $('#view').scrollTop > 56), { passive: true });
+  $('#view').addEventListener('scroll', syncBars, { passive: true });
+}
+
+function syncBars() {
+  const st = $('#view').scrollTop;
+  $('#topbar').classList.toggle('on', st > 56);
+  app.classList.toggle('sb-solid', st > 0 && st <= 56);
 }
 
 const SCREENS = { home: homeScreen, feed: feedScreen, clients: clientsScreen, plan: planScreen, inbox: inboxScreen };
@@ -82,7 +88,7 @@ function render({ animate = true, keepScroll = true } = {}) {
     view.scrollTop = view.scrollHeight;
     if (cl(top.id).unread) markRead(top.id);
   }
-  $('#topbar').classList.toggle('on', view.scrollTop > 56);
+  syncBars();
   K.newMeal = null;
 }
 
@@ -117,7 +123,6 @@ function homeScreen() {
   const d = K.data, s = d.stats, now = new Date();
   const h = now.getHours();
   const greet = h < 12 ? 'Bună dimineața' : h < 18 ? 'Bună ziua' : 'Bună seara';
-  const growth = s.history.at(-1) - s.history[0];
   const weighIns = activeClients().filter(c => c.weighIn.scheduledToday);
   const acts = d.activity.slice(0, 8);
   return `
@@ -126,7 +131,7 @@ function homeScreen() {
 
     <section class="card stats">
       <button class="stat" data-act="tab" data-tab="clients"><b class="num">${s.active}</b><span>clienți activi</span>
-        <small>${growth > 0 ? `+${growth} în ultima lună` : 'stabil'}</small>${sparkline(s.history, { w: 74, h: 20 })}</button>
+        ${sparkline(s.history, { w: 74, h: 20 })}</button>
       <button class="stat" data-act="tab" data-tab="feed"><b class="num">${s.mealsToday}</b><span>mese postate azi</span></button>
       <button class="stat" data-act="tab" data-tab="clients"><b class="num">${s.onTarget}<em>/${s.active}</em></b><span>la țintă azi</span><small>${statusDots()}</small></button>
     </section>
@@ -138,8 +143,7 @@ function homeScreen() {
       <div class="list">${acts.length ? acts.map(activityRow).join('') : `<div class="empty">Încă nicio masă azi.</div>`}</div></section>
 
     <section class="sec"><div class="card pad invite">
-      <div class="row-body"><div class="row-k">Cod de invitație</div><div class="invite-code">${esc(d.coach.inviteCode)}</div>
-        <div class="row-s">Clientul își face cont și introduce codul.</div></div>
+      <div class="row-body"><div class="row-k">Cod de invitație</div><div class="invite-code">${esc(d.coach.inviteCode)}</div></div>
       <button class="btn sm" data-act="copy-code">${icon('copy')} Copiază</button></div></section>`;
 }
 
@@ -154,7 +158,7 @@ function weighInRow(c) {
     <img class="avatar av-40" src="${esc(c.info.photo)}" alt="">
     <div class="row-body"><div class="row-t">${esc(c.info.firstName)}</div>
       <div class="row-s">${done ? `${fmt.kg(w.kg)} kg · ${fmt.time(w.at)}` : wi.reminderSent ? 'Reamintit la 17:00' : 'Notificat dimineața'}</div></div>
-    <span class="row-end">${done && w.delta != null ? `<span class="num ${deltaClass(c, w.delta)}">${w.delta > 0 ? '▲' : w.delta < 0 ? '▼' : '='} ${fmt.kg(Math.abs(w.delta))}</span>` : `<span class="pill"><span class="dot none"></span>așteaptă</span>`}</span>
+    <span class="row-end">${done && w.delta != null ? `<span class="num ${deltaClass(c, w.delta)}">${w.delta > 0 ? '▲' : w.delta < 0 ? '▼' : '='} ${fmt.kg(Math.abs(w.delta))}</span>` : ''}</span>
   </button>`;
 }
 
@@ -170,7 +174,7 @@ function activityRow(a) {
     return `<button class="row with-avatar" data-act="open-meal" data-id="${a.mealId}">
       <img class="avatar av-40" src="${esc(c.info.photo)}" alt="">
       <div class="row-body"><div class="row-k">${cap(fmt.ago(a.at))}</div><div class="row-t act-t"><b>${esc(c.info.firstName)}</b> a postat ${mealType(a.type).art}</div>
-        <div class="row-s num">${fmt.n(a.kcal)} kcal · <span class="dot ${a.status}"></span>ziua ${fmt.n(a.dayKcal)} / ${fmt.n(a.target)}</div></div>
+        <div class="row-s num">${fmt.n(a.kcal)} kcal · ${fmt.n(a.dayKcal)} / ${fmt.n(a.target)}</div></div>
       <img class="thumb sm" src="${esc(a.photo)}" alt=""></button>`;
   }
   return `<button class="row with-avatar" data-act="client" data-id="${a.clientId}">
@@ -187,7 +191,7 @@ function feedScreen() {
   const day = K.feedDay || dayKey(new Date());
   const items = d.meals.filter(x => dayKey(x.meal.at) === day && (K.feedClient === 'all' || x.meal.clientId === K.feedClient));
   return `
-    <header class="hdr"><div><div class="hdr-over">Cronologia meselor, cea mai nouă sus</div><h1 class="hdr-title">Calorii</h1></div></header>
+    <header class="hdr"><div><h1 class="hdr-title">Calorii</h1></div></header>
     <div class="daystrip">${d.days.map(x => {
       const on = dayKey(x.date) === day;
       return `<button class="ds ${on ? 'on' : ''}" data-act="feed-day" data-day="${dayKey(x.date)}">
@@ -208,12 +212,12 @@ function postCard({ meal: m, day }) {
   return `<article class="card post ${K.newMeal === m.id ? 'fade-in' : ''}" data-act="open-meal" data-id="${m.id}">
     <header class="post-h">
       <img class="avatar av-40" src="${esc(c.info.photo)}" alt="">
-      <div class="row-body"><div class="post-name">${esc(c.info.name)}</div><div class="row-s">${mealType(m.type).name} · ${fmt.time(m.at)}</div></div>
+      <div class="row-body"><div class="post-name">${esc(c.info.name)}</div>
+        <div class="row-s">${mealType(m.type).name} · ${fmt.time(m.at)}${comments ? ` · ${icon('chat-circle-text', true)} ${comments}` : ''}</div></div>
       ${ring({ size: 48, kcal: day.kcal, target: day.target, status: day.status, macros: false, center: 'num' })}
     </header>
     <img class="photo" src="${esc(m.photo)}" alt="" loading="lazy">
     <div class="post-b">
-      ${m.title ? `<div class="post-t">${esc(m.title)}</div>` : ''}
       <div class="post-items">${m.items.map(i => `${esc(i.name.replace(/ \(.*\)$/, ''))} <span class="num">${i.grams} ${i.unit}</span>`).join(' · ')}</div>
       <div class="post-stats">
         <div><span>Masa</span><b class="num">${fmt.n(m.kcal)} kcal</b></div>
@@ -221,10 +225,7 @@ function postCard({ meal: m, day }) {
         <div><span><i class="dot c"></i>Carbo</span><b class="num">${m.c} g</b></div>
         <div><span><i class="dot f"></i>Grăsimi</span><b class="num">${m.f} g</b></div>
       </div>
-      <div class="post-day">${statusPill(day.status)}<span class="muted num">Ziua: ${fmt.n(day.kcal)} / ${fmt.n(day.target)} kcal</span></div>
     </div>
-    <footer class="post-f"><button data-act="open-meal" data-id="${m.id}" data-focus="1">${icon('chat-circle')} Comentează</button>
-      ${comments ? `<span class="muted">${comments} ${comments === 1 ? 'comentariu' : 'comentarii'}</span>` : ''}</footer>
   </article>`;
 }
 
@@ -238,11 +239,11 @@ function openMeal(id, focus) {
     title: `${esc(c.info.firstName)} · ${mealType(m.type).name}`,
     full: true,
     body: `<img class="photo rounded" src="${esc(m.photo)}" alt="">
-      <div class="meal-head"><div class="recipe-t">${esc(m.title || itemsSummary(m.items))}</div><div class="muted">${cap(fmt.when(m.at))}, ${fmt.time(m.at)}</div></div>
+      <div class="meal-head muted">${cap(fmt.when(m.at))}, ${fmt.time(m.at)}</div>
       <ul class="ing">${m.items.map(i => `<li><span>${esc(i.name)} <span class="muted">· ${i.grams} ${i.unit}</span></span><span class="num">${fmt.n(i.kcal)} kcal</span></li>`).join('')}
         <li class="tot"><span>Total masă</span><span class="num">${fmt.n(m.kcal)} kcal</span></li></ul>
       <div class="macros-line"><span><i class="dot p"></i>P ${m.p} g</span><span><i class="dot c"></i>C ${m.c} g</span><span><i class="dot f"></i>G ${m.f} g</span></div>
-      <div class="sec"><div class="sec-h"><span class="sec-t">Ziua lui ${esc(c.info.firstName)}</span>${statusPill(day.status)}</div>
+      <div class="sec"><div class="sec-h"><span class="sec-t">Ziua lui ${esc(c.info.firstName)}</span></div>
         <div class="card pad today-top">${ring({ size: 112, kcal: day.kcal, target: day.target, p: day.p, c: day.c, f: day.f, status: day.status })}
           ${macroLegend(day, c.info.targets)}</div></div>
       ${comments.length ? `<div class="sec"><div class="sec-h"><span class="sec-t">Comentarii</span></div>
@@ -260,7 +261,7 @@ function clientsScreen() {
   const list = K.data.clients;
   const active = list.filter(c => c.info.active), inactive = list.filter(c => !c.info.active);
   return `
-    <header class="hdr"><div><div class="hdr-over">${active.length} activi${inactive.length ? ` · ${inactive.length} inactivi` : ''}</div><h1 class="hdr-title">Clienți</h1></div>
+    <header class="hdr"><div><h1 class="hdr-title">Clienți</h1></div>
       <div class="hdr-side"><button class="icon-btn" data-act="invite" aria-label="Invită client">${icon('user-plus')}</button></div></header>
     <div class="seg" style="margin-bottom:16px">
       <button class="${K.clientsSeg === 'azi' ? 'on' : ''}" data-act="clients-seg" data-seg="azi">Calorii azi</button>
@@ -283,8 +284,8 @@ function clientRow(c) {
   return `<button class="row with-avatar ${i.active ? '' : 'off'}" data-act="client" data-id="${i.id}">
     <img class="avatar av-44" src="${esc(i.photo)}" alt="">
     <div class="row-body"><div class="row-t">${esc(i.name)}${i.dietOnly ? ' <span class="tag">doar dietă</span>' : ''}</div>
-      <div class="row-s num">${t.meals ? `${fmt.n(t.kcal)} / ${fmt.n(t.target)} kcal azi` : 'nimic logat azi'}</div></div>
-    <span class="row-end">${i.active ? statusPill(t.status) : '<span class="tag">inactiv</span>'}</span></button>`;
+      <div class="row-s">${esc(i.goal)}</div></div>
+    <span class="row-end">${i.active ? ring({ size: 40, kcal: t.kcal, target: t.target, status: t.status, macros: false, center: 'num' }) : '<span class="tag">inactiv</span>'}</span></button>`;
 }
 
 function clientDetail(id) {
@@ -302,49 +303,42 @@ function clientDetail(id) {
     <button class="back" data-act="back">${icon('caret-left')} ${K.tab === 'inbox' ? 'Mesaje' : K.tab === 'clients' ? 'Clienți' : 'Înapoi'}</button>
     <header class="profile">
       <img class="avatar av-72" src="${esc(i.photo)}" alt="">
-      <div><h1 class="profile-name">${esc(i.name)}</h1>
-        <div class="soft">${esc(i.goal)}${i.dietOnly ? ' · doar dietă' : ''} · client din ${fmt.dayShort(i.since)}</div></div>
+      <div class="row-body"><h1 class="profile-name">${esc(i.name)}</h1>
+        <div class="soft">${esc(i.goal)}${i.dietOnly ? ' · doar dietă' : ''} · din ${fmt.dayShort(i.since)}</div></div>
+      <button class="icon-btn" data-act="thread" data-id="${id}" aria-label="Mesaj">${icon('chat-circle')}</button>
     </header>
-    <div class="actions">
-      <button class="btn sm" data-act="thread" data-id="${id}">${icon('chat-circle')} Mesaj</button>
-      <button class="btn sm" data-act="edit-targets" data-id="${id}">${icon('pencil-simple')} Ținte</button>
-      <button class="btn sm" data-act="edit-weighin" data-id="${id}">${icon('calendar-check')} Cântăriri</button>
-    </div>
     ${!i.active ? `<div class="card pad warn-card">${icon('lock-simple')}<div><b>Acces dezactivat.</b> ${esc(i.firstName)} nu mai vede planurile și rețetele.</div></div>` : ''}
 
-    <section class="sec"><div class="sec-h"><span class="sec-t">Azi</span>${statusPill(today.status)}</div>
+    <section class="sec"><div class="sec-h"><span class="sec-t">Azi</span></div>
       <div class="card pad today-top">${ring({ size: 128, kcal: today.kcal, target: t.kcal, p: today.p, c: today.c, f: today.f, status: today.status })}${macroLegend(today, t)}</div></section>
 
     <section class="sec"><div class="sec-h"><span class="sec-t">Săptămâna</span><span class="sec-a num">${fmt.n(w.total)} / ${fmt.n(w.target)}</span></div>
-      <div class="card pad">${weekBars({ days: w.days, target: t.kcal, width: contentW() - 32 })}
-        <div class="week-foot">${w.pace ? statusPill(w.pace, ' până acum') : '<span class="muted">Săptămâna abia a început</span>'}<span class="muted">Se judecă la final, ±5%</span></div></div></section>
+      <div class="card pad">${weekBars({ days: w.days, target: t.kcal, width: contentW() - 32 })}</div></section>
 
     <section class="sec"><div class="sec-h"><span class="sec-t">Ținte</span><button class="sec-a" data-act="edit-targets" data-id="${id}">Editează</button></div>
       <div class="card pad">
         <div class="kv"><span>Calorii pe zi</span><b class="num">${fmt.n(t.kcal)} kcal</b></div>
         <div class="kv"><span>Proteine · Carbo · Grăsimi</span><b class="num">${t.p} · ${t.c} · ${t.f} g</b></div>
-        <div class="kv"><span>Ținta săptămânală <span class="muted">(zi × 7)</span></span><b class="num">${fmt.n(t.weekly)} kcal</b></div>
       </div></section>
 
-    <section class="sec"><div class="sec-h"><span class="sec-t">Greutate</span><span class="sec-a num">${fmt.kg(cur)} kg · <span class="${deltaClass(s, fromStart)}">${fromStart >= 0 ? '+' : '−'}${fmt.kg(Math.abs(fromStart))}</span></span></div>
+    <section class="sec"><div class="sec-h"><span class="sec-t">Greutate</span><button class="sec-a" data-act="edit-weighin" data-id="${id}">Programează</button></div>
       <div class="card pad">${weightChart({ points: weights, target: i.goalKg, width: contentW() - 32 })}
-        <div class="kv" style="margin-top:6px"><span>Cântăriri</span><b>${names.length ? names.map(cap).join(', ') : '—'}</b></div>
+        <div class="kv" style="margin-top:6px"><span>De la început</span><b class="num ${deltaClass(s, fromStart)}">${fromStart >= 0 ? '+' : '−'}${fmt.kg(Math.abs(fromStart))} kg</b></div>
+        <div class="kv"><span>Cântăriri</span><b>${names.length ? names.map(cap).join(', ') : '—'}</b></div>
         <div class="kv"><span>Următoarea</span><b>${x.weighIn.next ? `${cap(fmt.when(x.weighIn.next))}, ${fmt.dayShort(x.weighIn.next)}` : '—'}</b></div>
       </div></section>
 
     ${sx ? `<section class="sec"><div class="sec-h"><span class="sec-t">Forță</span></div>
       <div class="chips" style="margin-bottom:10px">${series.map((o, k) => `<button class="chip ${k === K.strength.ex ? 'on' : ''}" data-act="str-ex" data-i="${k}">${esc(o.exercise)}</button>`).join('')}</div>
       <div class="card pad"><div class="seg" style="margin-bottom:12px"><button class="${K.strength.mode === 'week' ? 'on' : ''}" data-act="str-mode" data-m="week">Săptămână</button><button class="${K.strength.mode === 'month' ? 'on' : ''}" data-act="str-mode" data-m="month">Lună</button></div>
-        ${strengthBars({ points: K.strength.mode === 'week' ? sx.points.map(p => ({ kg: p.kg, sets: p.sets, label: fmt.dayShort(p.week), sub: `Săpt. din ${fmt.dayShort(p.week)}` })) : strengthByMonth(sx.points), width: contentW() - 32, labelAll: K.strength.mode === 'month' })}
-        <p class="sec-note">Greutatea maximă și numărul de serii la acea greutate.</p></div></section>` : ''}
+        ${strengthBars({ points: K.strength.mode === 'week' ? sx.points.map(p => ({ kg: p.kg, sets: p.sets, label: fmt.dayShort(p.week), sub: `Săpt. din ${fmt.dayShort(p.week)}` })) : strengthByMonth(sx.points), width: contentW() - 32, labelAll: K.strength.mode === 'month' })}</div></section>` : ''}
 
     ${!i.dietOnly ? `<section class="sec"><div class="sec-h"><span class="sec-t">Antrenamente săptămâna asta</span></div>
-      <div class="list">${workouts.length ? workouts.map(o => `<div class="row"><div class="row-body"><div class="row-t">${esc(o.title)}</div><div class="row-s">${cap(fmt.weekday(o.date))} · ${o.exercises.length} exerciții</div></div>
+      <div class="list">${workouts.length ? workouts.map(o => `<div class="row"><div class="row-body"><div class="row-t">${esc(o.title)}</div><div class="row-s">${cap(fmt.weekday(o.date))}</div></div>
         <span class="row-end">${o.completed ? '<span class="pill"><span class="dot ok"></span>completat</span>' : sameDay(o.date, new Date()) ? '<span class="tag">azi</span>' : D(o.date) < new Date() ? '<span class="pill"><span class="dot none"></span>necompletat</span>' : ''}</span></div>`).join('') : '<div class="empty">Niciun antrenament.</div>'}</div></section>` : ''}
 
     <section class="sec">
-      ${i.active ? `<button class="btn block danger" data-act="deactivate" data-id="${id}">${icon('lock-simple')} Dezactivează accesul</button>
-        <p class="sec-note">Clientul pierde accesul la aplicație și la informațiile primite de la tine.</p>`
+      ${i.active ? `<button class="btn block danger" data-act="deactivate" data-id="${id}">${icon('lock-simple')} Dezactivează accesul</button>`
         : `<button class="btn block primary" data-act="reactivate" data-id="${id}">Reactivează accesul</button>`}
     </section>`;
 }
@@ -416,7 +410,7 @@ function planWorkouts(sel) {
       <div class="row-body"><div class="row-t">${esc(i.firstName)}</div><div class="row-s">Doar dietă, fără antrenamente</div></div></div>`;
     const w = d.workouts.find(o => o.clientId === i.id && dayKey(o.date) === sel);
     if (!w) return `<div class="row with-avatar"><img class="avatar av-40" src="${esc(i.photo)}" alt="">
-      <div class="row-body"><div class="row-t">${esc(i.firstName)}</div><div class="row-s">Liber</div></div>
+      <div class="row-body"><div class="row-t">${esc(i.firstName)}</div></div>
       <button class="btn sm" data-act="assign" data-id="${i.id}" data-day="${sel}">${icon('plus')} Adaugă</button></div>`;
     const done = w.exercises.reduce((a, e) => a + e.sets.filter(s => s.done).length, 0);
     const total = w.exercises.reduce((a, e) => a + e.sets.length, 0);
@@ -426,7 +420,7 @@ function planWorkouts(sel) {
     return `<div class="wo ${open ? 'open' : ''}">
       <button class="row with-avatar" data-act="expand" data-id="${w.id}">
         <img class="avatar av-40" src="${esc(i.photo)}" alt="">
-        <div class="row-body"><div class="row-t">${esc(i.firstName)} · ${esc(w.title)}</div><div class="row-s">${w.exercises.length} exerciții</div></div>
+        <div class="row-body"><div class="row-t">${esc(i.firstName)} · ${esc(w.title)}</div></div>
         <span class="row-end">${state}${icon(open ? 'caret-up' : 'caret-down')}</span></button>
       ${open ? `<div class="wo-body">${w.exercises.map(e => `<div class="wo-ex"><span>${esc(e.name)}</span><span class="num muted">${e.unit === 'min' ? `${e.planSets > 1 ? e.planSets + ' × ' : ''}${e.planMin} min` : e.unit === 'bw' ? `${e.planSets}×${e.planReps} · BW` : `${e.planSets}×${e.planReps} · ${fmt.kgShort(e.planKg)} kg`}</span></div>`).join('')}
         <div class="wo-actions"><button class="btn sm" data-act="assign" data-id="${i.id}" data-day="${sel}">${icon('arrows-clockwise')} Schimbă</button>
@@ -435,8 +429,7 @@ function planWorkouts(sel) {
   }).join('');
   return `<div class="list">${rows}</div>
     <section class="sec"><div class="sec-h"><span class="sec-t">Șabloane</span><span class="sec-a">${d.templates.length}</span></div>
-      <div class="hscroll">${d.templates.map(t => `<div class="tpl"><img src="${esc(t.photo)}" alt=""><div class="tpl-b"><b>${esc(t.title)}</b><span>${t.exercises.length} exerciții</span></div></div>`).join('')}</div>
-      <p class="sec-note">Salvate o dată, le aplici oricărui client în orice zi.</p></section>`;
+      <div class="hscroll">${d.templates.map(t => `<div class="tpl"><img src="${esc(t.photo)}" alt=""><div class="tpl-b"><b>${esc(t.title)}</b><span>${t.exercises.length} exerciții</span></div></div>`).join('')}</div></section>`;
 }
 
 function planMeals(sel) {
@@ -447,17 +440,15 @@ function planMeals(sel) {
     const r = p && recipe(p.recipeId);
     return `<div class="row with-avatar"><img class="avatar av-40" src="${esc(i.photo)}" alt="">
       <div class="row-body"><div class="row-t">${esc(i.firstName)}</div>
-        <div class="row-s">${r ? `${esc(r.name)} · ${fmt.n(r.kcal)} kcal` : 'Nicio propunere'}</div></div>
+        ${r ? `<div class="row-s">${esc(r.name)} · ${fmt.n(r.kcal)} kcal</div>` : ''}</div>
       ${r ? `<button class="plan-thumb" data-act="propose" data-id="${i.id}" data-day="${sel}"><img class="thumb" src="${esc(r.photo)}" alt=""></button>`
         : `<button class="btn sm" data-act="propose" data-id="${i.id}" data-day="${sel}">${icon('plus')} Propune</button>`}</div>`;
   }).join('');
   return `<div class="seg" style="margin-bottom:12px">${['mic-dejun', 'pranz', 'gustare', 'cina'].map(t => `<button class="${K.planType === t ? 'on' : ''}" data-act="plan-type" data-t="${t}">${mealType(t).name}</button>`).join('')}</div>
     <div class="list">${rows}</div>
-    <p class="sec-note">Propunerile nu sunt obligatorii: îl ajută pe client să-și atingă macro-urile și să știe ce să cumpere.</p>
     <section class="sec"><div class="sec-h"><span class="sec-t">Rețetele mele</span><span class="sec-a">${d.recipes.length}</span></div>
       <div class="recipe-grid">${d.recipes.map(r => `<button class="rcard" data-act="recipe" data-id="${r.id}"><img src="${esc(r.photo)}" alt="" loading="lazy">
-        <b>${esc(r.name)}</b><span class="num">${fmt.n(r.kcal)} kcal · P ${r.p}</span></button>`).join('')}</div>
-      <p class="sec-note">Macro calculate automat din baza de alimente.</p></section>`;
+        <b>${esc(r.name)}</b><span class="num">${fmt.n(r.kcal)} kcal · P ${r.p}</span></button>`).join('')}</div></section>`;
 }
 
 function openAssign(id, day) {
@@ -499,7 +490,7 @@ function inboxScreen() {
   const rows = K.data.clients.map(c => ({ c, msgs: thread(c.info.id) })).filter(x => x.msgs.length)
     .sort((a, b) => D(b.msgs.at(-1).at) - D(a.msgs.at(-1).at));
   return `
-    <header class="hdr"><div><div class="hdr-over">${unreadTotal() ? `${unreadTotal()} necitite` : 'Toate citite'}</div><h1 class="hdr-title">Mesaje</h1></div></header>
+    <header class="hdr"><div><h1 class="hdr-title">Mesaje</h1></div></header>
     <div class="list">${rows.map(({ c, msgs }) => {
       const last = msgs.at(-1);
       const text = last.from === 'client' && last.translated ? last.translated : last.text;
@@ -507,8 +498,7 @@ function inboxScreen() {
         <img class="avatar av-44" src="${esc(c.info.photo)}" alt="">
         <div class="row-body"><div class="row-t">${esc(c.info.name)}</div><div class="row-s">${last.from === 'coach' ? 'Tu: ' : ''}${last.meal ? `${icon('camera')} ` : ''}${esc(text)}</div></div>
         <span class="row-end col"><span class="muted">${fmt.ago(last.at)}</span>${c.unread ? `<span class="badge-dot">${c.unread}</span>` : ''}</span></button>`;
-    }).join('')}</div>
-    <p class="sec-note">Mesajele se traduc automat între română și engleză.</p>`;
+    }).join('')}</div>`;
 }
 
 function threadScreen(id) {

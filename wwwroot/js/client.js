@@ -52,8 +52,9 @@ function shell() {
 }
 
 function onScroll() {
-  const v = $('#view');
-  $('#topbar').classList.toggle('on', v.scrollTop > 56);
+  const st = $('#view').scrollTop;
+  $('#topbar').classList.toggle('on', st > 56);
+  app.classList.toggle('sb-solid', st > 0 && st <= 56);
 }
 
 const SCREENS = { home: homeScreen, meals: mealsScreen, workout: workoutScreen, weight: weightScreen, chat: chatScreen };
@@ -107,11 +108,6 @@ function renderLocked() {
 function homeScreen() {
   const d = C.data, t = d.me.targets, today = d.today, w = d.week;
   const st = today.status;
-  const left = t.kcal - today.kcal;
-  const line = !st ? 'nimic logat încă azi'
-    : st === 'under' ? `mai ai ${fmt.n(left)} kcal`
-    : st === 'ok' ? 'ziua e pe țintă'
-    : `${fmt.n(-left)} kcal peste țintă`;
 
   return `
     <header class="hdr">
@@ -124,17 +120,12 @@ function homeScreen() {
         ${ring({ size: 150, kcal: today.kcal, target: t.kcal, p: today.p, c: today.c, f: today.f, status: st })}
         ${macroLegend(today, t)}
       </div>
-      <div class="today-foot">${statusPill(st)}<span class="muted">· ${line}</span></div>
     </section>
 
     <section class="sec">
       <div class="sec-h"><span class="sec-t">Săptămâna</span><span class="sec-a num">${fmt.n(w.total)} / ${fmt.n(w.target)} kcal</span></div>
       <div class="card pad">
         ${weekBars({ days: w.days, target: t.kcal, width: contentW() - 32 })}
-        <div class="week-foot">
-          ${w.pace ? statusPill(w.pace, ' până acum') : '<span class="muted">Prima zi a săptămânii</span>'}
-          <span class="muted">Contează totalul: ±5% e verde</span>
-        </div>
       </div>
     </section>
 
@@ -148,19 +139,19 @@ function nextMealRow() {
   const logged = new Set(mealsToday().map(m => m.type));
   const type = CHRONO.find(t => !logged.has(t));
   if (!type) return `<div class="row with-media"><span class="icon-tile">${icon('check')}</span>
-      <div class="row-body"><div class="row-t">Toate mesele de azi sunt logate</div><div class="row-s">Poți adăuga oricând o masă extra</div></div></div>`;
+      <div class="row-body"><div class="row-t">Toate mesele de azi sunt logate</div></div></div>`;
   const plan = planFor(new Date(), type);
   if (plan) {
     const r = plan.recipe;
     return `<button class="row with-media" data-act="log" data-type="${type}" data-recipe="1">
       <img class="thumb" src="${esc(r.photo)}" alt="">
-      <div class="row-body"><div class="row-k">${mealType(type).name} · propunerea lui ${esc(C.data.coach.firstName)}</div>
+      <div class="row-body"><div class="row-k">${mealType(type).name}</div>
         <div class="row-t">${esc(r.name)}</div><div class="row-s">${fmt.n(r.kcal)} kcal · P ${r.p} · C ${r.c} · G ${r.f}</div></div>
       <span class="row-end">${icon('caret-right')}</span></button>`;
   }
   return `<button class="row with-media" data-act="log" data-type="${type}">
       <span class="icon-tile">${icon('plus')}</span>
-      <div class="row-body"><div class="row-k">Următoarea masă</div><div class="row-t">${mealType(type).name}</div><div class="row-s">Adaugă poza și ingredientele</div></div>
+      <div class="row-body"><div class="row-k">Următoarea masă</div><div class="row-t">${mealType(type).name}</div></div>
       <span class="row-end">${icon('caret-right')}</span></button>`;
 }
 
@@ -177,8 +168,7 @@ function workoutRow() {
   const done = w.exercises.reduce((a, e) => a + e.sets.filter(s => s.done).length, 0);
   return `<button class="row with-media" data-act="tab" data-tab="workout">
       <img class="thumb" src="${esc(w.photo)}" alt="">
-      <div class="row-body"><div class="row-k">Antrenament azi</div><div class="row-t">${esc(w.title)}</div>
-        <div class="row-s">${w.exercises.length} exerciții · ${done ? `${done} din ${total} seturi` : `${total} seturi`}</div></div>
+      <div class="row-body"><div class="row-k">Antrenament azi</div><div class="row-t">${esc(w.title)}</div></div>
       <span class="row-end">${done === total ? `<span class="pill"><span class="dot ok"></span>gata</span>` : ''}${icon('caret-right')}</span></button>`;
 }
 
@@ -186,14 +176,12 @@ function weighInRow() {
   const wi = C.data.weighIn;
   if (wi.scheduledToday && !wi.doneToday) {
     return `<button class="row with-media" data-act="weigh"><span class="icon-tile accent">${icon('scales')}</span>
-      <div class="row-body"><div class="row-k">Cântărire programată</div><div class="row-t">Azi</div>
-        <div class="row-s">Valabilă toată ziua</div></div>
+      <div class="row-body"><div class="row-k">Cântărire programată</div><div class="row-t">Azi</div></div>
       <span class="row-end"><span class="btn sm primary">Cântărește-te</span></span></button>`;
   }
   return `<button class="row with-media" data-act="tab" data-tab="weight"><span class="icon-tile">${icon('scales')}</span>
       <div class="row-body"><div class="row-k">Următoarea cântărire</div>
-        <div class="row-t">${wi.next ? cap(fmt.when(wi.next)) + ', ' + fmt.dayShort(wi.next) : 'Neprogramată'}</div>
-        <div class="row-s">${wi.doneToday ? 'Te-ai cântărit azi' : 'Notificare dimineața, reamintire la 17:00'}</div></div>
+        <div class="row-t">${wi.next ? cap(fmt.when(wi.next)) + ', ' + fmt.dayShort(wi.next) : 'Neprogramată'}</div></div>
       <span class="row-end">${icon('caret-right')}</span></button>`;
 }
 
@@ -545,19 +533,18 @@ function weightScreen() {
   const progress = Math.max(0, Math.min(1, (cur - me.startKg) / (me.goalKg - me.startKg)));
   const cutoff = C.weightRange === '4w' ? addDays(new Date(), -28) : C.weightRange === '12w' ? addDays(new Date(), -84) : new Date(0);
   const pts = all.filter(p => D(p.at) >= cutoff);
-  const names = wi.days.map(n => ['', 'luni', 'marți', 'miercuri', 'joi', 'vineri', 'sâmbătă', 'duminică'][n]);
   const history = all.slice(-6).reverse();
   return `
-    <header class="hdr"><div><div class="hdr-over">Ținta ta: ${fmt.kgShort(me.goalKg)} kg</div><h1 class="hdr-title">Greutate</h1></div></header>
+    <header class="hdr"><div><h1 class="hdr-title">Greutate</h1></div></header>
     ${wi.scheduledToday && !wi.doneToday ? `
       <section class="card pad weigh-cta">
         <div class="wc-icon">${icon('scales')}</div>
-        <div class="row-body"><div class="row-t">Cântărire azi</div><div class="row-s">Valabilă toată ziua</div></div>
+        <div class="row-body"><div class="row-t">Cântărire azi</div></div>
         <button class="btn sm primary" data-act="weigh">Cântărește-te</button>
       </section>` : ''}
     <section class="card pad">
       <div class="w-hero"><span class="w-num">${fmt.kg(cur)}</span><span class="w-unit">kg</span></div>
-      <div class="w-sub"><span class="${towardGoal ? 'delta-good' : 'delta-bad'}">${diff >= 0 ? '+' : '−'}${fmt.kg(Math.abs(diff))} kg</span> de la început (${fmt.kgShort(me.startKg)} kg)</div>
+      <div class="w-sub"><span class="${towardGoal ? 'delta-good' : 'delta-bad'}">${diff >= 0 ? '+' : '−'}${fmt.kg(Math.abs(diff))} kg</span> de la început</div>
       <div class="goal-meter"><div class="meter"><span style="width:${progress * 100}%;background:var(--series)"></span></div>
         <div class="gm-l"><span>${fmt.kgShort(me.startKg)}</span><span>${Math.round(progress * 100)}% din drum</span><span>${fmt.kgShort(me.goalKg)} kg</span></div></div>
       <div class="seg" style="margin:18px 0 6px">${[['4w', '4 săpt.'], ['12w', '12 săpt.'], ['all', 'Tot']].map(([k, l]) => `<button class="${C.weightRange === k ? 'on' : ''}" data-act="w-range" data-r="${k}">${l}</button>`).join('')}</div>
@@ -566,8 +553,7 @@ function weightScreen() {
     <section class="sec"><div class="sec-h"><span class="sec-t">Cântăriri programate</span></div>
       <div class="card pad">
         <div class="wd-row">${[1, 2, 3, 4, 5, 6, 7].map(n => `<span class="wd ${wi.days.includes(n) ? 'on' : ''}">${['L', 'Ma', 'Mi', 'J', 'V', 'S', 'D'][n - 1]}</span>`).join('')}</div>
-        <p class="sec-note">${names.length ? `În fiecare ${names.join(' și ')}, stabilite de ${esc(d.coach.firstName)}.` : 'Nicio cântărire programată.'} Primești o notificare dimineața și o reamintire la 17:00.</p>
-        ${wi.next && !(wi.scheduledToday && !wi.doneToday) ? `<div class="kv"><span>Următoarea</span><b>${cap(fmt.when(wi.next))}, ${fmt.dayShort(wi.next)}</b></div>` : ''}
+        ${wi.next && !(wi.scheduledToday && !wi.doneToday) ? `<div class="kv" style="margin-top:6px"><span>Următoarea</span><b>${cap(fmt.when(wi.next))}, ${fmt.dayShort(wi.next)}</b></div>` : ''}
       </div></section>
     <section class="sec"><div class="sec-h"><span class="sec-t">Istoric</span></div>
       <div class="list">${history.map((h, i) => {

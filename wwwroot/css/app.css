@@ -148,6 +148,8 @@ img { display: block; }
 .statusbar .sb-icons { display: flex; gap: 6px; align-items: center; padding-top: 3px; }
 .statusbar svg { display: block; fill: currentColor; }
 html:not(.device) .statusbar { display: none; }
+/* La scroll mic (înainte să apară bara de sus), conținutul nu trece pe sub ceas. */
+.app.sb-solid .statusbar { background: var(--bg); }
 
 /* Bara de sus care apare la scroll (titlul mic, ca pe iOS) */
 .topbar {
