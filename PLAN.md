@@ -206,3 +206,4 @@ Scop: un punct de plecare curat, de la care se poate reveni oricând.
 - **21.11.2026:** Răspunsuri primite: fără Mac (iOS în cloud), repository privat nou pe contul utilizatorului, Firebase confirmat, rețete și șabloane proprii (etapa 3 nouă), ștergerea clientului include contul. Adăugat `.gitignore`; `bin/` și `obj/` scoase din git. Commit + tag `demo-hackathon`.
 - **22.11.2026:** Proiect reorganizat (`src/`, `tests/`, `docs/`), soluție, 19 teste care trec, RUNBOOK. Demo-ul verificat: rulează identic din noua structură. Rămas din etapa 0: repository-ul privat (îl creează utilizatorul), Azure for Students, Docker Desktop.
 - **22.11.2026:** Codul urcat în repository-ul privat `AvramPaul/MyFitnessCoach` (branch `main` + tag `demo-hackathon`).
+- **23.11.2026:** README rescris în engleză, ca prezentare pentru portofoliu, cu capturi de ecran în rame de telefon (`docs/screenshots/`, generate automat cu Playwright).
